@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.example.reactnativearchireportpdf">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+      android:name=".MainApplication"
+      android:label="@string/app_name"
+      android:icon="@mipmap/ic_launcher"
+      android:roundIcon="@mipmap/ic_launcher_round"
+      android:allowBackup="false"
+      android:theme="@style/AppTheme">
+      <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+      </activity>
+      <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+      <meta-data
+            android:name="pspdfkit_license_key"
+            android:value="PdMlw30CJ_9IFUWpRDnxG_zEXL7ZzOSENLyZJKOiCCnTLzggKbCfdgS2jxsE4rEvXWcQ9vkzjfr2R9eYNW61ifX3WSmz5zIZe4S0vZF7VOv7NxcPfZxhKrLEDez8cWEpnkYgPq9nRtieIHDo9DQdn8K3L8qXGXNmDQrHVgG8q7-ocEByXizrgs8pncIX5FVsu0hrdEdM73NLv0a3bLsIy44kj74Svg1fKj5j3FwadOYCutrdhevYJPRM9Mc-OJueSitCpyfiAAra4dZmfhHvKlG59ulzGgPIJ76WUKSwEXNlQoFQDYjTJT14oYabqQPvXF6pd_R1-xNy7UXuy9NLPXc7PCxLw14cq31iyElCO43_afez6HqirhZW7lC20ILVJabyRVsVOQMHR8Ln8nUBO49b6UT_o5QyG5Ud7OoS2Fds0lgU-tlA8EsKJPPzjEELvtL7xJdM0JQn0u7Hg2j_lg=="/>
+
+    </application>
+
+</manifest>
