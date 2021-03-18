@@ -1,14 +1,16 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   NativeModules,
-  Text,
-  TouchableOpacity,
   View,
   PermissionsAndroid,
 } from 'react-native';
+import PSPDFKitView from '@archireport/react-native-pspdfkit';
 
 const PSPDFKit = NativeModules.PSPDFKit;
+PSPDFKit.setLicenseKey(
+  'PdMlw30CJ_9IFUWpRDnxG_zEXL7ZzOSENLyZJKOiCCnTLzggKbCfdgS2jxsE4rEvXWcQ9vkzjfr2R9eYNW61ifX3WSmz5zIZe4S0vZF7VOv7NxcPfZxhKrLEDez8cWEpnkYgPq9nRtieIHDo9DQdn8K3L8qXGXNmDQrHVgG8q7',
+);
 
 const DOCUMENT = 'file:///sdcard/document.pdf';
 const DOCUMENT_IMAGE = 'file:///sdcard/image.jpg';
@@ -18,31 +20,70 @@ const CONFIGURATION = {
   pageScrollDirection: 'vertical',
 };
 
+/**
+ * Convert and index to an alaphabetic letter or string (0 -> a, 1 -> b, c, d, e ... aa, ab, ac)
+ */
+export const indexChar = (index: number, postfix = ''): string => {
+  const alphabetMax = 26;
+
+  return index < alphabetMax
+    ? String.fromCharCode(97 + index) + postfix
+    : indexChar(
+        Math.floor(index / alphabetMax) - 1,
+        indexChar(index % alphabetMax),
+      );
+};
+
 // Change 'YourApp' to your app's name.
-export default class YourApp extends Component<{}> {
-  _onPressButton() {
-    requestExternalStoragePermission();
-  }
+const YourApp = () => {
+  const [length, setLength] = useState(10);
 
-  _onPressButtonImage() {
-    requestExternalStoragePermissionImage();
-  }
+  const [positions, setPositions] = useState([
+    {
+      page: 0,
+      positions: [
+        {name: '1.a', x: 0.5, y: 0.5},
+        {name: '1.b', x: 0.2, y: 0.2},
+      ],
+    },
+  ]);
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>{PSPDFKit.versionString}</Text>
-        <TouchableOpacity onPress={this._onPressButton}>
-          <Text style={styles.text}>Tap to Open Document</Text>
-        </TouchableOpacity>
+  return (
+    <View style={{flex: 1}}>
+      <View style={{flex: 1, width: 300}}>
+        <PSPDFKitView
+          document={DOCUMENT}
+          configuration={{
+            pageTransition: 'scrollContinuous',
+            pageScrollDirection: 'vertical',
+            documentLabelEnabled: true,
+            pageMode: 'single',
+            showPageNumberOverlay: true,
+            fitPageToWidth: true,
+          }}
+          positionTitle={`1.${indexChar(length)}`}
+          positions={positions}
+          style={{flex: 1, color: '#267AD4'}}
+          positionColor="#008000"
+          onPositionsChanged={({nativeEvent}) => {
+            setLength((l) => l + 1);
+            setPositions((positions) =>
+              positions.some((page) => page.page === nativeEvent.page)
+                ? positions.map((page) =>
+                    page.page === nativeEvent.page ? nativeEvent : page,
+                  )
+                : positions.concat(nativeEvent),
+            );
 
-        <TouchableOpacity onPress={this._onPressButtonImage}>
-          <Text style={styles.text}>Tap to Open Image</Text>
-        </TouchableOpacity>
+            console.log({data: JSON.stringify(nativeEvent)});
+          }}
+        />
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
+
+export default YourApp;
 
 const CONFIGURATION_IMAGE_DOCUMENT = {
   showPageNumberOverlay: false,
